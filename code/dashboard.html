@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome, <span id="user-name">User</span>!</h2>
+        <p>This is your dashboard.</p>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        document.getElementById("user-name").textContent = localStorage.getItem("loggedInUser") || "User";
+        
+        function logout() {
+            localStorage.removeItem("loggedInUser");
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
