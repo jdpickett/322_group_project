@@ -1,0 +1,46 @@
+<!--this file is meant to create a space dedicated for the IDE-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IDE</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Additional inline styles for the IDE page, basically how it looks*/
+    #editor {
+      height: 400px;
+      width: 100%;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+    #output {
+      border: 1px solid #ccc;
+      padding: 10px;
+      background-color: #f9f9f9;
+      min-height: 100px;
+    }
+  </style>
+</head>
+<body>
+    <div class="container">
+      <h2>Code Editor</h2>
+      <!-- Code editor container -->
+      <div id="editor"></div>
+      
+      <!-- Run code button -->
+      <button id="run-code" onclick="runCode()">Run Code</button>
+      
+      <!-- Navigation link back to Dashboard -->
+      <a href="dashboard.html" class="btn">Back to Dashboard</a>
+      
+      <!-- Output display -->
+      <div id="output">Output will appear here</div>
+    </div>
+    
+    <!-- Load Ace Editor from CDN first -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <!-- Then load your IDE script -->
+    <script src="ide.js"></script>
+
+  </body>
+  </html>
