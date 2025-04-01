@@ -24,6 +24,19 @@
 <body>
     <div class="container">
       <h2>Code Editor</h2>
+
+      <!-- Problem selection dropdown -->
+      <label for="problem-select">Choose a problem:</label>
+        <select id="problem-select" onchange="loadProblem()">
+          <option value="">-- Select a Problem --</option>
+          <option value="sum">Sum of Two Numbers</option>
+          <option value="factorial">Factorial</option>
+          <option value="reverse">Reverse a String</option>
+        </select>
+
+      <!-- Problem description area -->
+      <div id="problem-description" style="text-align: left; margin: 10px 0;"></div>
+
       <!-- Code editor container -->
       <div id="editor"></div>
       
