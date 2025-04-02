@@ -1,4 +1,4 @@
-<!--this file is meant to create a space dedicated for the IDE-->
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,7 +6,6 @@
   <title>IDE</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Additional inline styles for the IDE page, basically how it looks*/
     #editor {
       height: 400px;
       width: 100%;
@@ -22,38 +21,29 @@
   </style>
 </head>
 <body>
-    <div class="container">
-      <h2>Code Editor</h2>
+  <div class="container">
+    <h2>Code Editor</h2>
 
-      <!-- Problem selection dropdown -->
-      <label for="problem-select">Choose a problem:</label>
-        <select id="problem-select" onchange="loadProblem()">
-          <option value="">-- Select a Problem --</option>
-          <option value="sum">Sum of Two Numbers</option>
-          <option value="factorial">Factorial</option>
-          <option value="reverse">Reverse a String</option>
-        </select>
+    <!-- Problem Description -->
+    <div id="problem-description" style="text-align: left; margin-bottom: 10px;"></div>
 
-      <!-- Problem description area -->
-      <div id="problem-description" style="text-align: left; margin: 10px 0;"></div>
+    <!-- Code Editor -->
+    <div id="editor"></div>
 
-      <!-- Code editor container -->
-      <div id="editor"></div>
-      
-      <!-- Run code button -->
+    <!-- Button Group -->
+    <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
       <button id="run-code" onclick="runCode()">Run Code</button>
-      
-      <!-- Navigation link back to Dashboard -->
-      <a href="dashboard.html" class="btn">Back to Dashboard</a>
-      
-      <!-- Output display -->
-      <div id="output">Output will appear here</div>
+      <button onclick="showSolution()">Show Solution</button>
     </div>
-    
-    <!-- Load Ace Editor from CDN first -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
-    <!-- Then load your IDE script -->
-    <script src="ide.js"></script>
 
-  </body>
-  </html>
+    <!-- Navigation -->
+    <a href="dashboard.html" class="btn">Back to Dashboard</a>
+
+    <!-- Output Display -->
+    <div id="output">Output will appear here</div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+  <script src="ide.js"></script>
+</body>
+</html>
