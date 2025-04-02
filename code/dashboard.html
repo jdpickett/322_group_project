@@ -10,17 +10,28 @@
     <div class="container">
         <h2>Welcome, <span id="user-name">User</span>!</h2>
         <p>This is your dashboard.</p>
-        <!--this is meant to be the link to the specialized IDE page-->
-        <a href="ide.html" class="btn">Open IDE</a>
+
+        <h3>Select a Coding Problem:</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+            <button class="btn" onclick="selectProblem('sum')">Sum of Two Numbers</button>
+            <button class="btn" onclick="selectProblem('factorial')">Factorial</button>
+            <button class="btn" onclick="selectProblem('reverse')">Reverse a String</button>
+        </div>
+
         <button onclick="logout()">Logout</button>
     </div>
 
     <script>
         document.getElementById("user-name").textContent = localStorage.getItem("loggedInUser") || "User";
-        
+
         function logout() {
             localStorage.removeItem("loggedInUser");
             window.location.href = "index.html";
+        }
+
+        function selectProblem(problemKey) {
+            localStorage.setItem("selectedProblem", problemKey);
+            window.location.href = "ide.html";
         }
     </script>
 </body>
