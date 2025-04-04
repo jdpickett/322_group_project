@@ -15,7 +15,8 @@ console.log(sum(3, 4)); // Expected output: 7`,
   return a + b;
 }
 
-console.log(sum(3, 4)); // Expected output: 7`
+console.log(sum(3, 4)); // Expected output: 7`,
+     expectedOutput: "7"
   },
   factorial: {
     description: "Write a function that calculates the factorial of a number.",
@@ -29,7 +30,8 @@ console.log(factorial(5)); // Expected output: 120`,
   return n * factorial(n - 1);
 }
 
-console.log(factorial(5)); // Expected output: 120`
+console.log(factorial(5)); // Expected output: 120`,
+    expectedOutput: "120"
   },
   reverse: {
     description: "Write a function that reverses a string.",
@@ -47,17 +49,35 @@ console.log(reverseString("hello")); // Expected output: "olleh"`
 };
 
 
+function saveWork() {//function called by button press
+  const code = editor.getValue();
+  const selected = localStorage.getItem("selectedProblem");
+  if (selected) {
+    localStorage.setItem("draft_" + selected, code);
+    alert("Your work has been saved!");
+  } else {
+    alert("No problem selected to save.");
+  }
+}
+
 function loadProblemFromStorage() {
   const selected = localStorage.getItem("selectedProblem");
   const problem = problems[selected];
   if (problem) {
     document.getElementById("problem-description").textContent = problem.description;
-    editor.setValue(problem.starterCode, -1);
+    // Check if there is saved work for this problem
+    const savedCode = localStorage.getItem("draft_" + selected);
+    if (savedCode) {
+      editor.setValue(savedCode, -1);
+    } else {
+      editor.setValue(problem.starterCode, -1);
+    }
   } else {
     document.getElementById("problem-description").textContent = "No problem selected.";
     editor.setValue("// No problem selected.");
   }
 }
+
 
 function runCode() {
   var code = editor.getValue();
@@ -92,5 +112,45 @@ function showSolution() {
     alert("No problem selected.");
   }
 }
+
+function verifySolution() {
+  const userCode = editor.getValue();
+  const selected = localStorage.getItem("selectedProblem");
+  const problem = problems[selected];
+  
+  if (!problem) {
+    alert("No problem selected.");
+    return;
+  }
+  
+  // Override console.log to capture output.
+  const originalLog = console.log;
+  let capturedOutput = "";
+  console.log = function(...args) {
+    capturedOutput += args.join(" ") + "\n";
+    originalLog.apply(console, args);
+  };
+
+  try {
+    // Execute the user's code.
+    eval(userCode);
+  } catch (error) {
+    alert("Your code threw an error: " + error.message);
+    console.log = originalLog;
+    return;
+  }
+  
+  // Restore original console.log.
+  console.log = originalLog;
+  
+  // Trim outputs for a fair comparison.
+  if (capturedOutput.trim() === problem.expectedOutput.trim()) {
+    alert("Your solution is correct!");
+  } else {
+    alert("Your solution is incorrect.\nExpected: " + problem.expectedOutput + "\nGot: " + capturedOutput.trim());
+  }
+}
+
+
 
 window.onload = loadProblemFromStorage;
