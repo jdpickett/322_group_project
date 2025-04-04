@@ -1,62 +1,58 @@
 # Sprint x Report 
 Video Link: 
 ## What's New (User Facing)
- * Feature 1 or Bug Fix 1
- * Feature 2 or Bug Fix 2
- * Feature n or Bug Fix n
+ * Saving Work
+ * Problem Selection
+ * Show Solution
+ * Solution Verification
+ * Different User Types
+ * Create Problems
 
 ## Work Summary (Developer Facing)
-Provide a one paragraph synposis of what your team accomplished this sprint. Don't repeat the "What's New" list of features. Instead, help the instructor understand how you went about the work described there, any barriers you overcame, and any significant learnings for your team.
+For this sprint we had a better game plan going into the sprint than we did for sprint 1. This made completing features more efficient and thus allowed us to get more feature done in the time frame. We did, however, come across a problem that slowed us down a little bit. During the first meeting we decided to do the "problems in different languages" feature. When we had started on the feature we did not realize how difficult of a feature it would be to implement. It was gonna take a lot more time than we anticipated to we decided to call it off for this sprint. We might come back to it later on or we might just scrap the entire feature. Other than that hang up for the sprint we were confident with the rest and was able to complete it without any other issues. 
 
 ## Unfinished Work
-If applicable, explain the work you did not finish in this sprint. For issues/user stories in the current sprint that have not been closed, (a) any progress toward completion of the issues has been clearly tracked (by checking the checkboxes of  acceptance criteria), (b) a comment has been added to the issue to explain why the issue could not be completed (e.g., "we ran out of time" or "we did not anticipate it would be so much work"), and (c) the issue is added to a subsequent sprint, so that it can be addressed later.
+The "problems in different language" feature. It was just much more intensive than we thought as we would need to download stuff from a third party to be able to run other languages like python and c++ in a javascript file. 
 
 ## Completed Issues/User Stories
 Here are links to the issues that we completed in this sprint:
 
- * URL of issue 1
- * URL of issue 2
- * URL of issue n
-
- Desirables (Remove this section when you save the file):
-  * Each issue should be assigned to a milestone
-  * Each completed issue should be assigned to a pull request
-  * Each completed pull request should include a link to a "Before and After" video
-  * All team members who contributed to the issue should be assigned to it on GitHub
-  * Each issue should be assigned story points using a label
-  * Story points contribution of each team member should be indicated in a comment
+ * [URL of issue 1](https://github.com/jdpickett/322_group_project/issues/2)
+ * [URL of issue 2](https://github.com/jdpickett/322_group_project/issues/4)
+ * [URL of issue 3](https://github.com/jdpickett/322_group_project/issues/6)
+ * [URL of issue 4](https://github.com/jdpickett/322_group_project/issues/10)
+ * [URL of issue 5](https://github.com/jdpickett/322_group_project/issues/14)
+ * [URL of issue 6](https://github.com/jdpickett/322_group_project/issues/15)
  
  ## Incomplete Issues/User Stories
  Here are links to issues we worked on but did not complete in this sprint:
  
- * URL of issue 1 <<One sentence explanation of why issue was not completed>>
- * URL of issue 2 <<One sentence explanation of why issue was not completed>>
- * URL of issue n <<One sentence explanation of why issue was not completed>>
- 
- Examples of explanations (Remove this section when you save the file):
-  * "We ran into a complication we did not anticipate (explain briefly)." 
-  * "We decided that the feature did not add sufficient value for us to work on it in this sprint (explain briefly)."
-  * "We could not reproduce the bug" (explain briefly).
-  * "We did not get to this issue because..." (explain briefly)
+ * [URL of issue 1](https://github.com/jdpickett/322_group_project/issues/11) <<Harder than we thought it would be and took up too much time.>>
 
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
- * [Name of code file 1](https://github.com/your_repo/file_extension)
- * [Name of code file 2](https://github.com/your_repo/file_extension)
- * [Name of code file 3](https://github.com/your_repo/file_extension)
+ * [dashboard.html](https://github.com/jdpickett/322_group_project/blob/main/code/dashboard.html)
+ * [index.html](https://github.com/jdpickett/322_group_project/blob/main/code/index.html)
+ * [ide.html](https://github.com/jdpickett/322_group_project/blob/main/code/ide.html)
+ * [create.html](https://github.com/jdpickett/322_group_project/blob/main/code/create.html)
+ * [ide.js](https://github.com/jdpickett/322_group_project/blob/main/code/ide.js)
+ * [script.js](https://github.com/jdpickett/322_group_project/blob/main/code/script.js)
+ * [styles.css](https://github.com/jdpickett/322_group_project/blob/main/code/styles.css)
  
 ## Retrospective Summary
 Here's what went well:
-  * Item 1
-  * Item 2
-  * Item x
+  * Saving work
+  * Problem Selection
+  * Show Solution
+  * Solution Verification
+  * Different User Types
+  * Create Problems
  
 Here's what we'd like to improve:
-   * Item 1
-   * Item 2
-   * Item x
+   * Make the website more presentable
+   * Improve some functionality of features
   
 Here are changes we plan to implement in the next sprint:
-   * Item 1
-   * Item 2
-   * Item x
+   * Finish the rest of the features
+   * More presentable website
+   * 
