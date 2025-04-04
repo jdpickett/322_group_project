@@ -27,7 +27,7 @@ Here are links to the issues that we completed in this sprint:
  ## Incomplete Issues/User Stories
  Here are links to issues we worked on but did not complete in this sprint:
  
- * [URL of issue 1](https://github.com/jdpickett/322_group_project/issues/11) <Harder than we thought it would be and took up too much time.>
+ * [URL of issue 1](https://github.com/jdpickett/322_group_project/issues/11) << Harder than we thought it would be and took up too much time. >>
 
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
