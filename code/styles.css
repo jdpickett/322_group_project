@@ -13,11 +13,13 @@ body {
     margin: auto;
 }
 input {
-    width: 100%;
+    width: 90%;
+    max-width: 250px;
     padding: 10px;
-    margin: 5px 0;
+    margin: 8px auto;
     border: 1px solid #ccc;
     border-radius: 5px;
+    display: block;
 }
 button {
     width: 100%;

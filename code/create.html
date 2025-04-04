@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create a Coding Problem</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .editor-box {
+      height: 200px;
+      width: 100%;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+    }
+    .container {
+      max-width: 1000px;
+      width: 90%;
+    }
+    label {
+      font-weight: bold;
+      text-align: left;
+      display: block;
+      margin-top: 10px;
+    }
+    textarea, input {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Create a Coding Problem</h2>
+
+    <label for="problem-name">Problem Name:</label>
+    <input type="text" id="problem-name" placeholder="e.g., Palindrome Checker"/>
+
+    <label for="problem-description">Description:</label>
+    <textarea id="problem-description" rows="4" placeholder="Describe the problem..."></textarea>
+
+    <label>Starter Code:</label>
+    <div id="starter-editor" class="editor-box"></div>
+
+    <label>Solution Code:</label>
+    <div id="solution-editor" class="editor-box"></div>
+
+    <label for="expected-output">Expected Output:</label>
+    <input type="text" id="expected-output" placeholder="e.g., true"/>
+
+    <button onclick="saveProblem()">Save Problem</button>
+    <a href="dashboard.html" class="btn" style="margin-top: 10px;">Back to Dashboard</a>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+  <script>
+    const starterEditor = ace.edit("starter-editor");
+    starterEditor.setTheme("ace/theme/monokai");
+    starterEditor.session.setMode("ace/mode/javascript");
+
+    const solutionEditor = ace.edit("solution-editor");
+    solutionEditor.setTheme("ace/theme/monokai");
+    solutionEditor.session.setMode("ace/mode/javascript");
+
+    function saveProblem() {
+      const name = document.getElementById("problem-name").value.trim();
+      const description = document.getElementById("problem-description").value.trim();
+      const starterCode = starterEditor.getValue();
+      const solutionCode = solutionEditor.getValue();
+      const expectedOutput = document.getElementById("expected-output").value.trim();
+      const username = localStorage.getItem("loggedInUser") || "anonymous";
+
+      if (!name || !description || !starterCode || !solutionCode || !expectedOutput) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const newProblem = {
+        name,
+        description,
+        starterCode,
+        solutionCode,
+        expectedOutput
+      };
+
+      const key = `userProblems_${username}`;
+      const existing = JSON.parse(localStorage.getItem(key)) || [];
+      existing.push(newProblem);
+      localStorage.setItem(key, JSON.stringify(existing));
+
+      alert("Problem saved!");
+      window.location.href = "dashboard.html";
+    }
+  </script>
+</body>
+</html>

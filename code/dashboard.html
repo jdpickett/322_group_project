@@ -1,38 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .problem-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .problem-name-btn {
+      flex-grow: 1;
+    }
+
+    .delete-btn {
+      background-color: red;
+      padding: 6px 12px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: darkred;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Welcome, <span id="user-name">User</span>!</h2>
-        <p>This is your dashboard.</p>
+  <div class="container">
+    <h2>Welcome, <span id="user-name">User</span>!</h2>
+    <p>This is your dashboard.</p>
 
-        <h3>Select a Coding Problem:</h3>
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-            <button class="btn" onclick="selectProblem('sum')">Sum of Two Numbers</button>
-            <button class="btn" onclick="selectProblem('factorial')">Factorial</button>
-            <button class="btn" onclick="selectProblem('reverse')">Reverse a String</button>
-        </div>
-
-        <button onclick="logout()">Logout</button>
+    <h3>Select a Built-in Coding Problem:</h3>
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+      <button class="btn" onclick="selectProblem('sum')">Sum of Two Numbers</button>
+      <button class="btn" onclick="selectProblem('factorial')">Factorial</button>
+      <button class="btn" onclick="selectProblem('reverse')">Reverse a String</button>
     </div>
 
-    <script>
-        document.getElementById("user-name").textContent = localStorage.getItem("loggedInUser") || "User";
+    <h3>Your Custom Problems:</h3>
+    <div id="custom-problems" style="margin-bottom: 20px;"></div>
 
-        function logout() {
-            localStorage.removeItem("loggedInUser");
-            window.location.href = "index.html";
-        }
+    <a href="create.html" class="btn" style="margin-bottom: 10px;">Create New Problem</a>
+    <button onclick="logout()" style="margin-top: 40px;">Logout</button>
+  </div>
 
-        function selectProblem(problemKey) {
-            localStorage.setItem("selectedProblem", problemKey);
-            window.location.href = "ide.html";
-        }
-    </script>
+  <script>
+    document.getElementById("user-name").textContent = localStorage.getItem("loggedInUser") || "User";
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "index.html";
+    }
+
+    function selectProblem(problemKey) {
+      localStorage.removeItem("selectedCustomProblem");
+      localStorage.setItem("selectedProblem", problemKey);
+      window.location.href = "ide.html";
+    }
+
+    const username = localStorage.getItem("loggedInUser");
+    const customProblems = JSON.parse(localStorage.getItem("userProblems_" + username)) || [];
+    const container = document.getElementById("custom-problems");
+
+    if (customProblems.length > 0) {
+      customProblems.forEach((prob, index) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "problem-item";
+
+        const btn = document.createElement("button");
+        btn.textContent = prob.name;
+        btn.className = "btn problem-name-btn";
+        btn.onclick = function () {
+          localStorage.removeItem("selectedProblem");
+          localStorage.setItem("selectedCustomProblem", index);
+          window.location.href = "ide.html";
+        };
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.onclick = function () {
+          if (confirm(`Are you sure you want to delete "${prob.name}"?`)) {
+            customProblems.splice(index, 1);
+            localStorage.setItem("userProblems_" + username, JSON.stringify(customProblems));
+            location.reload();
+          }
+        };
+
+        wrapper.appendChild(btn);
+        wrapper.appendChild(deleteBtn);
+        container.appendChild(wrapper);
+      });
+    } else {
+      container.innerHTML = "<p>No custom problems yet.</p>";
+    }
+  </script>
 </body>
 </html>

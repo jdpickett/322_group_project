@@ -16,7 +16,7 @@ console.log(sum(3, 4)); // Expected output: 7`,
 }
 
 console.log(sum(3, 4)); // Expected output: 7`,
-     expectedOutput: "7"
+    expectedOutput: "7"
   },
   factorial: {
     description: "Write a function that calculates the factorial of a number.",
@@ -44,15 +44,20 @@ console.log(reverseString("hello")); // Expected output: "olleh"`,
   return str.split('').reverse().join('');
 }
 
-console.log(reverseString("hello")); // Expected output: "olleh"`
+console.log(reverseString("hello")); // Expected output: "olleh"`,
+    expectedOutput: "olleh"
   }
 };
 
-
-function saveWork() {//function called by button press
+function saveWork() {
   const code = editor.getValue();
   const selected = localStorage.getItem("selectedProblem");
-  if (selected) {
+  const customIndex = localStorage.getItem("selectedCustomProblem");
+
+  if (customIndex !== null) {
+    localStorage.setItem("draft_custom_" + customIndex, code);
+    alert("Your custom problem work has been saved!");
+  } else if (selected) {
     localStorage.setItem("draft_" + selected, code);
     alert("Your work has been saved!");
   } else {
@@ -62,34 +67,43 @@ function saveWork() {//function called by button press
 
 function loadProblemFromStorage() {
   const selected = localStorage.getItem("selectedProblem");
+  const customIndex = localStorage.getItem("selectedCustomProblem");
+  const username = localStorage.getItem("loggedInUser");
+
+  if (customIndex !== null && username) {
+    const userProblems = JSON.parse(localStorage.getItem("userProblems_" + username)) || [];
+    const problem = userProblems[parseInt(customIndex)];
+    if (problem) {
+      document.getElementById("problem-description").textContent = problem.description;
+      const savedCode = localStorage.getItem("draft_custom_" + customIndex);
+      editor.setValue(savedCode || problem.starterCode, -1);
+      editor.customExpectedOutput = problem.expectedOutput;
+      editor.customSolutionCode = problem.solutionCode;
+      return;
+    }
+  }
+
   const problem = problems[selected];
   if (problem) {
     document.getElementById("problem-description").textContent = problem.description;
-    // Check if there is saved work for this problem
     const savedCode = localStorage.getItem("draft_" + selected);
-    if (savedCode) {
-      editor.setValue(savedCode, -1);
-    } else {
-      editor.setValue(problem.starterCode, -1);
-    }
+    editor.setValue(savedCode || problem.starterCode, -1);
   } else {
     document.getElementById("problem-description").textContent = "No problem selected.";
     editor.setValue("// No problem selected.");
   }
 }
 
-
 function runCode() {
   var code = editor.getValue();
   const outputElement = document.getElementById("output");
-  outputElement.textContent = ""; // Clear previous output
+  outputElement.textContent = "";
 
-  // Capture console.log
   const originalLog = console.log;
   let capturedOutput = "";
   console.log = function (...args) {
     capturedOutput += args.join(" ") + "\n";
-    originalLog.apply(console, args); // Optional: still logs to browser console
+    originalLog.apply(console, args);
   };
 
   try {
@@ -99,12 +113,23 @@ function runCode() {
     outputElement.textContent = "Error: " + err.message;
   }
 
-  console.log = originalLog; // Restore original console.log
+  console.log = originalLog;
 }
-
 
 function showSolution() {
   const selected = localStorage.getItem("selectedProblem");
+  const customIndex = localStorage.getItem("selectedCustomProblem");
+  const username = localStorage.getItem("loggedInUser");
+
+  if (customIndex !== null && username) {
+    const userProblems = JSON.parse(localStorage.getItem("userProblems_" + username)) || [];
+    const problem = userProblems[parseInt(customIndex)];
+    if (problem) {
+      editor.setValue(problem.solutionCode, -1);
+      return;
+    }
+  }
+
   const problem = problems[selected];
   if (problem) {
     editor.setValue(problem.solutionCode, -1);
@@ -116,41 +141,42 @@ function showSolution() {
 function verifySolution() {
   const userCode = editor.getValue();
   const selected = localStorage.getItem("selectedProblem");
-  const problem = problems[selected];
-  
-  if (!problem) {
+  const customIndex = localStorage.getItem("selectedCustomProblem");
+  const username = localStorage.getItem("loggedInUser");
+
+  let expectedOutput;
+
+  if (customIndex !== null && username) {
+    expectedOutput = editor.customExpectedOutput;
+  } else if (selected && problems[selected]) {
+    expectedOutput = problems[selected].expectedOutput;
+  } else {
     alert("No problem selected.");
     return;
   }
-  
-  // Override console.log to capture output.
+
   const originalLog = console.log;
   let capturedOutput = "";
-  console.log = function(...args) {
+  console.log = function (...args) {
     capturedOutput += args.join(" ") + "\n";
     originalLog.apply(console, args);
   };
 
   try {
-    // Execute the user's code.
     eval(userCode);
   } catch (error) {
     alert("Your code threw an error: " + error.message);
     console.log = originalLog;
     return;
   }
-  
-  // Restore original console.log.
+
   console.log = originalLog;
-  
-  // Trim outputs for a fair comparison.
-  if (capturedOutput.trim() === problem.expectedOutput.trim()) {
+
+  if (capturedOutput.trim() === expectedOutput.trim()) {
     alert("Your solution is correct!");
   } else {
-    alert("Your solution is incorrect.\nExpected: " + problem.expectedOutput + "\nGot: " + capturedOutput.trim());
+    alert("Your solution is incorrect.\nExpected: " + expectedOutput + "\nGot: " + capturedOutput.trim());
   }
 }
-
-
 
 window.onload = loadProblemFromStorage;
