@@ -55,4 +55,3 @@ Here's what we'd like to improve:
 Here are changes we plan to implement in the next sprint:
    * Finish the rest of the features
    * More presentable website
-   * 
