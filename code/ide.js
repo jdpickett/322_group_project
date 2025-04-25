@@ -1,182 +1,272 @@
+// Initialize Ace editor and set theme
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
-editor.session.setMode("ace/mode/javascript");
-editor.setValue("// Loading...");
 
+// Pyodide setup to enable in-browser Python execution
+let pyodide, pyodideReady = false;
+async function initPyodide() {
+  pyodide = await loadPyodide();
+  pyodideReady = true;
+}
+// Start Pyodide loading immediately
+initPyodide();
+
+/**
+ * Handle language selection change
+ * - Switch Ace editor mode (syntax highlighting)
+ * - Reload the current problem in the new language
+ */
+function onLanguageChange() {
+  const lang = document.getElementById("lang-select").value;
+  const mode = lang === "python"
+    ? "ace/mode/python"
+    : "ace/mode/javascript";
+  editor.session.setMode(mode);
+  loadProblemFromStorage();
+}
+ 
+// Data structure holding problems for each language
 const problems = {
+  //prob 1
   sum: {
     description: "Write a function that takes two numbers and returns their sum.",
-    starterCode: `function sum(a, b) {
+    javascript: {
+      starterCode: `function sum(a, b) {
   // Your code here
 }
 
 console.log(sum(3, 4)); // Expected output: 7`,
-    solutionCode: `function sum(a, b) {
+      solutionCode: `function sum(a, b) {
   return a + b;
 }
 
 console.log(sum(3, 4)); // Expected output: 7`,
-    expectedOutput: "7"
+      expectedOutput: "7"
+    },
+    python: {
+      starterCode: `def sum(a, b):
+    # Your code here
+    pass
+
+print(sum(3, 4))  # Expected output: 7`,
+      solutionCode: `def sum(a, b):
+    return a + b
+
+print(sum(3, 4))  # Expected output: 7`,
+      expectedOutput: "7"
+    }
   },
+
+  //prob 2
   factorial: {
     description: "Write a function that calculates the factorial of a number.",
-    starterCode: `function factorial(n) {
+    javascript: {
+      starterCode: `function factorial(n) {
   // Your code here
 }
 
 console.log(factorial(5)); // Expected output: 120`,
-    solutionCode: `function factorial(n) {
+      solutionCode: `function factorial(n) {
   if (n <= 1) return 1;
   return n * factorial(n - 1);
 }
 
 console.log(factorial(5)); // Expected output: 120`,
-    expectedOutput: "120"
+      expectedOutput: "120"
+    },
+    python: {
+      starterCode: `def factorial(n):
+    # Your code here
+    pass
+
+print(factorial(5))  # Expected output: 120`,
+      solutionCode: `def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)
+
+print(factorial(5))  # Expected output: 120`,
+      expectedOutput: "120"
+    }
   },
+
+  //prob 3
   reverse: {
     description: "Write a function that reverses a string.",
-    starterCode: `function reverseString(str) {
+    javascript: {
+      starterCode: `function reverseString(str) {
   // Your code here
 }
 
 console.log(reverseString("hello")); // Expected output: "olleh"`,
-    solutionCode: `function reverseString(str) {
+      solutionCode: `function reverseString(str) {
   return str.split('').reverse().join('');
 }
 
 console.log(reverseString("hello")); // Expected output: "olleh"`,
-    expectedOutput: "olleh"
+      expectedOutput: "olleh"
+    },
+    python: {
+      starterCode: `def reverse_string(s):
+    # Your code here
+    pass
+
+print(reverse_string("hello"))  # Expected output: "olleh"`,
+      solutionCode: `def reverse_string(s):
+    return s[::-1]
+
+print(reverse_string("hello"))  # Expected output: "olleh"`,
+      expectedOutput: "olleh"
+    }
   }
 };
 
+//saving current work function
 function saveWork() {
+  const sel  = localStorage.getItem("selectedProblem");
+  const lang = document.getElementById("lang-select").value;
   const code = editor.getValue();
-  const selected = localStorage.getItem("selectedProblem");
-  const customIndex = localStorage.getItem("selectedCustomProblem");
-
-  if (customIndex !== null) {
-    localStorage.setItem("draft_custom_" + customIndex, code);
-    alert("Your custom problem work has been saved!");
-  } else if (selected) {
-    localStorage.setItem("draft_" + selected, code);
-    alert("Your work has been saved!");
-  } else {
-    alert("No problem selected to save.");
-  }
+  localStorage.setItem(`draft_${sel}_${lang}`, code);
+  alert("Your work has been saved!");
 }
 
+//load previouse work problem
 function loadProblemFromStorage() {
-  const selected = localStorage.getItem("selectedProblem");
-  const customIndex = localStorage.getItem("selectedCustomProblem");
-  const username = localStorage.getItem("loggedInUser");
+  const sel  = localStorage.getItem("selectedProblem");
+  const lang = document.getElementById("lang-select").value;
+  const problem = problems[sel] && problems[sel][lang];
+  if (!problem) {
+    editor.setValue("// No problem or language selected.", -1);
+    return;
+  }
+  // Display problem description
+  document.getElementById("problem-description").textContent = problem.description;
+  const key = `draft_${sel}_${lang}`;
+  const saved = localStorage.getItem(key);
+  editor.setValue(saved || problem.starterCode, -1);
+}
 
-  if (customIndex !== null && username) {
-    const userProblems = JSON.parse(localStorage.getItem("userProblems_" + username)) || [];
-    const problem = userProblems[parseInt(customIndex)];
-    if (problem) {
-      document.getElementById("problem-description").textContent = problem.description;
-      const savedCode = localStorage.getItem("draft_custom_" + customIndex);
-      editor.setValue(savedCode || problem.starterCode, -1);
-      editor.customExpectedOutput = problem.expectedOutput;
-      editor.customSolutionCode = problem.solutionCode;
-      return;
+//run code & display output
+async function runCode() {
+  const lang = document.getElementById("lang-select").value;
+  const code = editor.getValue();
+  const outEl = document.getElementById("output");
+  outEl.textContent = "";
+
+  if (lang === "javascript") {
+    // existing JS eval logic…
+    try {
+      let captured = "";
+      const orig = console.log;
+      console.log = (...args) => { captured += args.join(" ") + "\n"; orig.apply(console, args); };
+      eval(code);
+      console.log = orig;
+      outEl.textContent = captured || "No output.";
+    } catch (e) {
+      outEl.textContent = "Error: " + e.message;
     }
   }
+  else if (lang === "python") {
+    if (!pyodideReady) 
+    {
+      return outEl.textContent = "Python loading…";
+    }
+    try {
+      // Capture everything printed to stdout
+      let stdout = "";
+      pyodide.setStdout({
+        batched: (s) => { stdout += s}
+        });
+        
+      
+      await pyodide.runPythonAsync(code);
 
-  const problem = problems[selected];
-  if (problem) {
-    document.getElementById("problem-description").textContent = problem.description;
-    const savedCode = localStorage.getItem("draft_" + selected);
-    editor.setValue(savedCode || problem.starterCode, -1);
-  } else {
-    document.getElementById("problem-description").textContent = "No problem selected.";
-    editor.setValue("// No problem selected.");
+      pyodide.setStdout();// Reset stdout
+    
+      outEl.textContent = stdout.trim() || "no output.";
+    } catch (err) {
+      outEl.textContent = "Error: " + err;
+    }
   }
 }
 
-function runCode() {
-  var code = editor.getValue();
-  const outputElement = document.getElementById("output");
-  outputElement.textContent = "";
-
-  const originalLog = console.log;
-  let capturedOutput = "";
-  console.log = function (...args) {
-    capturedOutput += args.join(" ") + "\n";
-    originalLog.apply(console, args);
-  };
-
-  try {
-    eval(code);
-    outputElement.textContent = capturedOutput || "No output.";
-  } catch (err) {
-    outputElement.textContent = "Error: " + err.message;
-  }
-
-  console.log = originalLog;
-}
-
+//Replace editor contents with the official solution code
 function showSolution() {
-  const selected = localStorage.getItem("selectedProblem");
-  const customIndex = localStorage.getItem("selectedCustomProblem");
-  const username = localStorage.getItem("loggedInUser");
+  const sel  = localStorage.getItem("selectedProblem");
+  const lang = document.getElementById("lang-select").value;
+  const problem = problems[sel] && problems[sel][lang];
+  if (!problem) {
+    alert("No problem or language selected.");
+    return;
+  } 
+  editor.setValue(problem.solutionCode, -1);
+}
+//Verify user solution by comparing captured output to expectedOutput
+async function verifySolution() {
+  const lang = document.getElementById("lang-select").value;
+  const code = editor.getValue();
+  const sel = localStorage.getItem("selectedProblem");
+  const problem = problems[sel] && problems[sel][lang];
+  
+  if (!problem) {
+    alert("No problem or language selected.");
+    return;
+  }
+  
+  const expected = problem.expectedOutput.trim();
+  let actual = "";
 
-  if (customIndex !== null && username) {
-    const userProblems = JSON.parse(localStorage.getItem("userProblems_" + username)) || [];
-    const problem = userProblems[parseInt(customIndex)];
-    if (problem) {
-      editor.setValue(problem.solutionCode, -1);
+  if (lang === "javascript") {
+    const originalLog = console.log;
+    let captured = "";// Capture console.log for JS verification
+    console.log = (...args) => {
+      captured += args.join(" ") + "\n";
+      originalLog.apply(console, args);
+    };
+    
+    try {
+      eval(code);
+    } catch (err) {
+      alert("Your code threw an error: " + err.message);
+      console.log = originalLog;
+      return;
+    }
+    
+    console.log = originalLog;
+    actual = captured.trim();
+  }
+  else if (lang === "python") {
+    if (!pyodideReady) {
+      alert("Python is still loading…");
+      return;
+    }
+    try {
+      // Run the Python code and take its return value (or None)
+      let stdout = "";
+      pyodide.setStdout({ batched: (s) => { stdout += s; } });
+      await pyodide.runPythonAsync(code);
+      pyodide.setStdout();
+
+      actual = stdout.trim();
+    } catch (err) {
+      alert("Your code threw an error: " + err);
       return;
     }
   }
-
-  const problem = problems[selected];
-  if (problem) {
-    editor.setValue(problem.solutionCode, -1);
-  } else {
-    alert("No problem selected.");
-  }
-}
-
-function verifySolution() {
-  const userCode = editor.getValue();
-  const selected = localStorage.getItem("selectedProblem");
-  const customIndex = localStorage.getItem("selectedCustomProblem");
-  const username = localStorage.getItem("loggedInUser");
-
-  let expectedOutput;
-
-  if (customIndex !== null && username) {
-    expectedOutput = editor.customExpectedOutput;
-  } else if (selected && problems[selected]) {
-    expectedOutput = problems[selected].expectedOutput;
-  } else {
-    alert("No problem selected.");
-    return;
-  }
-
-  const originalLog = console.log;
-  let capturedOutput = "";
-  console.log = function (...args) {
-    capturedOutput += args.join(" ") + "\n";
-    originalLog.apply(console, args);
-  };
-
-  try {
-    eval(userCode);
-  } catch (error) {
-    alert("Your code threw an error: " + error.message);
-    console.log = originalLog;
-    return;
-  }
-
-  console.log = originalLog;
-
-  if (capturedOutput.trim() === expectedOutput.trim()) {
+  // Alert correctness result to the user
+  if (actual === expected) {
     alert("Your solution is correct!");
   } else {
-    alert("Your solution is incorrect.\nExpected: " + expectedOutput + "\nGot: " + capturedOutput.trim());
+    alert(
+      "Your solution is incorrect.\n" +
+      "Expected: " + expected + "\n" +
+      "Got:      " + actual
+    );
   }
 }
 
-window.onload = loadProblemFromStorage;
+
+// on load, pick the right language & code
+window.onload = () => {
+onLanguageChange();
+};
