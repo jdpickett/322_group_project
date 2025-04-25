@@ -27,8 +27,15 @@
     <!-- Problem Description -->
     <div id="problem-description" style="text-align: left; margin-bottom: 10px;"></div>
 
+   
     <!-- Code Editor -->
     <div id="editor"></div>
+    
+    <label for="lang-select">Language:</label>
+    <select id="lang-select" onchange="onLanguageChange()">
+      <option value="javascript">JavaScript</option>
+      <option value="python">Python</option>
+    </select>
 
     <!-- Button Group -->
     <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
@@ -46,6 +53,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <script src="ide.js"></script>
 </body>
 </html>
