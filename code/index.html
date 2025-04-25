@@ -15,9 +15,17 @@
             <h3>Sign Up</h3>
             <input type="text" id="signup-username" placeholder="Choose a username">
             <input type="password" id="signup-password" placeholder="Choose a password">
-            <button onclick="signup()">Sign Up</button>
+  
+            <label for="signup-type" style="text-align: left; display: block; margin-top: 10px;">I am a:</label>
+            <select id="signup-type" style="width: 100%; padding: 10px; border-radius: 5px;">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+            </select>
+  
+            <button onclick="signup()" style="margin-top: 15px;">Sign Up</button>
             <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
         </div>
+  
 
         <!-- Login Form -->
         <div id="login-box" style="display:none;">
